@@ -1,0 +1,35 @@
+# main'da "maosh (3).html" o'zgarsa, uni bookhouse.uz'ga qo'yadi:
+# bookhouse-site repo'sining Pages branch'iga index.html qilib yozadi.
+# BOOKHOUSE_DEPLOY_KEY — bookhouse-site'ning deploy key'i (yozish huquqi bilan), shaxsiy kalit qismi.
+# Qo'lda: Actions -> bookhouse.uz -> Run workflow.
+name: bookhouse.uz
+on:
+  push:
+    branches: [main]
+    paths: ['maosh (3).html']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: bookhouse
+  cancel-in-progress: false
+env:
+  SITE_REPO: olimjonov0415/bookhouse-site
+  SITE_BRANCH: claude/awesome-shannon-5sd5p9
+jobs:
+  joylash:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - env:
+          KEY: ${{ secrets.BOOKHOUSE_DEPLOY_KEY }}
+        run: |
+          mkdir -p ~/.ssh && printf '%s\n' "$KEY" > ~/.ssh/site && chmod 600 ~/.ssh/site
+          export GIT_SSH_COMMAND="ssh -i ~/.ssh/site -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new"
+          git clone --depth 1 -b "$SITE_BRANCH" "git@github.com:$SITE_REPO.git" site
+          cp "maosh (3).html" site/index.html
+          cd site
+          if git diff --quiet; then echo "O'zgarish yo'q"; exit 0; fi
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+            commit -qam "Maosh hisobi (${GITHUB_SHA::7})"
+          git push
