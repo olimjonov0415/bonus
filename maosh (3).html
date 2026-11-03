@@ -395,7 +395,7 @@ $("addBtn").onclick = () => {
   const m = parseFloat($("add").value);
   if (!natija.length) return bildirish("Avval faylni hisoblang.");
   if (!q) return bildirish("ID kiriting.");
-  if (Number.isNaN(m) || m < 0) return bildirish("Qo'shiladigan maoshni kiriting.");
+  if (Number.isNaN(m) || m < 0) return bildirish("Qo'shiladigan shartnoma summasini kiriting.");
   let r = natija.find(x => x.id === q);
   const yangi = !r;
   if (yangi) { r = { id: q, maosh: 0, qoldiq: 0, bonus: 0 }; natija.push(r); }
@@ -407,7 +407,7 @@ $("addBtn").onclick = () => {
   if (k > 0) {
     bildirish(`<strong>${k} ta bonus qo'shildi.</strong> Jami bonus: ${r.bonus}. Qoldiq: ${fmt(r.qoldiq)}.`, true);
   } else {
-    bildirish(`Maosh qo'shildi${yangi ? " (yangi ID)" : ""}. Qoldiq: ${fmt(r.qoldiq)}. Bonus uchun ${fmt(yaxl(bol - r.qoldiq))} yetishmaydi.`);
+    bildirish(`Summa qo'shildi${yangi ? " (yangi ID)" : ""}. Qoldiq: ${fmt(r.qoldiq)}. Bonus uchun ${fmt(yaxl(bol - r.qoldiq))} yetishmaydi.`);
   }
 };
 $("add").addEventListener("keydown", e => { if (e.key === "Enter") $("addBtn").click(); });
